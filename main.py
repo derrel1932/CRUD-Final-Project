@@ -1,1 +1,6 @@
 print('Hello dunia')
+print('Hello dunia')
+print('Hello dunia')
+print('Hello dunia')
+print('Hello dunia')
+print('Hello dunia')
