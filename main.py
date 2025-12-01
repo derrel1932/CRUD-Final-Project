@@ -15,7 +15,29 @@ if __name__ == '__main__':
     # open the file and load its contents into the system
     fieldnames, main_data_dict, groups_of_data = df_.cf_.read_n_dict(file_path, GROUPABLES, RANKED_FIELD, STORED_RANKS)
 
-    # finish and write evrything in the system back to file storage
+    # program loop
+    while True:
+        df_.display_menu()
+        # get an action input
+        match input("Enter action : "):
+            # CREATE
+            case '1': main_data_dict, groups_of_data = df_.create(main_data_dict, groups_of_data, fieldnames)
+
+            # READ
+            case '2': main_data_dict, groups_of_data = df_.read(main_data_dict, groups_of_data, fieldnames)
+
+            # UPDATE
+            case '3': main_data_dict, groups_of_data = df_.update(main_data_dict, groups_of_data, fieldnames)
+                
+            # DELETE
+            case '4': main_data_dict, groups_of_data = df_.delete(main_data_dict, groups_of_data, fieldnames)
+                
+            # EXIT
+            case '5':
+                print("End of Session. Have a nice day !")
+                break
+
+    # finish and write everything in the system back to file storage
     df_.cf_.write_dicts(file_path, fieldnames, main_data_dict, groups_of_data, RANKED_FIELD, STORED_RANKS)
 
 
