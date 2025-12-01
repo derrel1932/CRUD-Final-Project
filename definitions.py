@@ -1,15 +1,52 @@
 import core_functionality as cf_
 
-def create(main_dict, group_dict, fieldnames):
+def create(main_dict, group_dict, fieldnames, main_key, groupables, ranked_field, rank_storage):
     print("Welcome to Create mode")
-    print("Create a new ")
+    print("Create new objects to store in the CSV file")
+    print("Note that the user is responsible for fields created")
+    # remember the main_key field is turned into the key so get rid of the main_key
+    fieldnames.remove(main_key)
+    # the user doesnt get to set this ranking
+    fieldnames.remove(rank_storage)
+
+    # create loop
+    while True:
+        answers_buffer = {}
+        # prompt the new key first
+        new_key = input(f"Set the {main_key} : ")
+        # prompt the fields of that key
+        for field in fieldnames:
+            answers_buffer[field] = input(f">>> {field} : ")
+        
+        # show a preview of what was typed
+        print(f"{new_key} : {answers_buffer}")
+        # confirm and only create when user confirms
+        if input("Are you sure you want to create this ? (y/n)") in "Yy" :
+            # default ranking, this rank only gets defined at writing to file
+            answers_buffer[rank_storage] = -1
+            # CREATE TO MAIN DICTIONARY
+            main_dict[new_key] = answers_buffer
+            # ALSO GROUP INTO GROUPABLES
+            groupables.append(ranked_field)
+            for group in groupables: # populate the group_dict
+                group_name = answers_buffer[group] # get the name of the current row's group
+                if group_name not in group_dict[group]: # create the list if it havent existed yet
+                    group_dict[group][group_name] = [new_key] # This creates the first list of names!
+                else : group_dict[group][group_name].append(new_key) # just append otherwise
+            print(f"Created {new_key} : {main_dict[new_key]}")
+            
+        # ask if the user wants to create another field
+        if input("Create another ? (y/n)") not in 'Yy': break
     return main_dict, group_dict
+
 
 def read(main_dict, group_dict, fieldnames):
     return main_dict, group_dict
 
+
 def update(main_dict, group_dict, fieldnames):
     return main_dict, group_dict
+
 
 def delete(main_dict, group_dict, fieldnames):
     return main_dict, group_dict

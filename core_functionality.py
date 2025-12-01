@@ -1,7 +1,7 @@
 import csv
 
 # READ THE FILE AND LOAD THE CONTENTS INTO THE PROGRAM'S DICTIONARY
-def read_n_dict(file_path, groupables, ranked_field, stored_ranks):
+def read_n_dict(file_path, main_key, groupables, ranked_field, rank_storage):
     main_dict = {}
     group_dict = {}
     # good practice to use with when opening files to properly auto close the file after use !
@@ -15,9 +15,9 @@ def read_n_dict(file_path, groupables, ranked_field, stored_ranks):
         
         # populate the main dictionary and group
         for row_ in reader:
-            name = row_.pop("Name") # the Name field becomes the keys
+            name = row_.pop(main_key) # the Name field becomes the keys
             row_[ranked_field] = int(row_[ranked_field]) # convert these as numerical value
-            row_[stored_ranks] = int(row_[stored_ranks]) # convert these as numerical value
+            row_[rank_storage] = int(row_[rank_storage]) # convert these as numerical value
             main_dict[name] = row_ # main contains all the fields as value of each Name as key
 
             for group in groupables: # populate the group_dict
@@ -31,7 +31,7 @@ def read_n_dict(file_path, groupables, ranked_field, stored_ranks):
 
 
 # Write back to file from the dictionaries
-def write_dicts(file_path, headers, main_dict, group_dict, ranked_field, stored_rank):
+def write_dicts(file_path, headers, main_key, main_dict, group_dict, ranked_field, stored_rank):
     with open(file_path, "w", newline='', encoding='utf-8') as file_:
         # get the rank sorted out in decending order
         ranked_values = list(group_dict[ranked_field].keys())
@@ -49,7 +49,7 @@ def write_dicts(file_path, headers, main_dict, group_dict, ranked_field, stored_
             # then it is considered the same ranking
             for name in list_of_names:
                 main_dict[name][stored_rank] = rank + 1 # set the rank first
-                writer.writerow({"Name" : name, **main_dict[name]}) # WRITE !
+                writer.writerow({main_key : name, **main_dict[name]}) # WRITE !
 
 
 # debug tools
