@@ -51,6 +51,13 @@ def write_dicts(file_path, headers, main_key, main_dict, group_dict, ranked_fiel
                 main_dict[name][stored_rank] = rank + 1 # set the rank first
                 writer.writerow({main_key : name, **main_dict[name]}) # WRITE !
 
+# make it easy to prompt numerical values
+def get_numeric(prompt_string):
+    while True:
+        try :
+            return float(input(prompt_string))
+        except ValueError:
+            continue
 
 # debug tools
 def get_by_major_group(dict_, major_group):

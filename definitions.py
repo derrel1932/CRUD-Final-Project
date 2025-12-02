@@ -1,5 +1,7 @@
 import core_functionality as cf_
 
+# ============================================================================================== CREATE
+# the classic create part of the CRUD
 def create(main_dict, group_dict, fieldnames, main_key, groupables, ranked_field, rank_storage):
     print("Welcome to Create mode")
     print("Create new objects to store in the CSV file")
@@ -16,7 +18,10 @@ def create(main_dict, group_dict, fieldnames, main_key, groupables, ranked_field
         new_key = input(f"Set the {main_key} : ")
         # prompt the fields of that key
         for field in fieldnames:
-            answers_buffer[field] = input(f">>> {field} : ")
+            if fieldnames == ranked_field : # if the user has to fill in the ranked_field must be numeric
+                answers_buffer[field] = cf_.get_numeric(f">>> {field} : ")
+            else : # anything else
+                answers_buffer[field] = input(f">>> {field} : ")
         
         # show a preview of what was typed
         print(f"{new_key} : {answers_buffer}")
@@ -40,14 +45,20 @@ def create(main_dict, group_dict, fieldnames, main_key, groupables, ranked_field
     return main_dict, group_dict
 
 
+# ============================================================================================== READ
+# the classic read part of the CRUD
 def read(main_dict, group_dict, fieldnames):
     return main_dict, group_dict
 
 
+# ============================================================================================== UPDATE
+# the classic update part of the CRUD
 def update(main_dict, group_dict, fieldnames):
     return main_dict, group_dict
 
 
+# ============================================================================================== DELETE
+# the classic delete part of the CRUD
 def delete(main_dict, group_dict, fieldnames):
     return main_dict, group_dict
 
