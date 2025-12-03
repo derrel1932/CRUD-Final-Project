@@ -19,7 +19,6 @@ def create(main_dict, group_dict, FIELDNAMES, main_key, groupables, ranked_field
         new_key = input(f"Set the {main_key} : ")
         # prompt the fields of that key
         for field in fieldnames:
-            print(f"{field} == {ranked_field}")
             if field == ranked_field : # if the user has to fill in the ranked_field must be numeric
                 answers_buffer[field] = cf_.get_numeric(f">>> {field} : ")
             else : # anything else
@@ -34,11 +33,8 @@ def create(main_dict, group_dict, FIELDNAMES, main_key, groupables, ranked_field
             # CREATE TO MAIN DICTIONARY
             main_dict[new_key] = answers_buffer
             # ALSO GROUP INTO GROUPABLES
-            for group in groupables: # populate the group_dict
-                group_name = answers_buffer[group] # get the name of the current row's group
-                if group_name not in group_dict[group]: # create the list if it havent existed yet
-                    group_dict[group][group_name] = [new_key] # This creates the first list of names!
-                else : group_dict[group][group_name].append(new_key) # just append otherwise
+            group_dict = cf_.handle_groups(groupables, new_key, answers_buffer, group_dict)
+            
             print(f"Created {new_key} : {main_dict[new_key]}")
             
         # ask if the user wants to create another field

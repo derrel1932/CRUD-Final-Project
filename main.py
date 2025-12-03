@@ -1,9 +1,9 @@
 import definitions as df_
-file_path = './6000_Largest_Companies_ranked_by_Market_Cap.csv'
+file_path = './blablabala.csv'
 # This defines the field to be used as the main key
 MAIN_KEY = "Name"
 # groupables are defined as the strings of the field_types in the header of the csv file
-# fields in the groupables are to be main groups of fields with names
+# fields in the groupables are to be major groups of fields with names
 GROUPABLES = ["Symbol", "Country"]
 # we only give an option to rank one field
 RANKED_FIELD = "Marketcap"
@@ -19,7 +19,6 @@ if __name__ == '__main__':
     FIELDNAMES, main_data_dict, groups_of_data = df_.cf_.read_n_dict(file_path, MAIN_KEY, GROUPABLES, RANKED_FIELD, RANK_STORAGE)
 
     # program loop
-    print(FIELDNAMES)
     while True:
         df_.display_menu()
         # get an action input

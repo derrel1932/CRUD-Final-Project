@@ -16,19 +16,25 @@ def read_n_dict(file_path, main_key, groupables, ranked_field, rank_storage):
         # populate the main dictionary and group
         for row_ in reader:
             name = row_.pop(main_key) # the Name field becomes the keys
-            row_[ranked_field] = int(row_[ranked_field]) # convert these as numerical value
-            row_[rank_storage] = int(row_[rank_storage]) # convert these as numerical value
+            row_[ranked_field] = float(row_[ranked_field]) # convert these as numerical value
+            row_[rank_storage] = float(row_[rank_storage]) # convert these as numerical value
             main_dict[name] = row_ # main contains all the fields as value of each Name as key
 
-            # for each fieldnames to be group-ed
-            for group in groupables: # populate the group_dict
-                group_name = row_[group] # get the name of the current row's group
-                if group_name not in group_dict[group]: # create the list if it havent existed yet
-                    group_dict[group][group_name] = [name] # This creates the first list of names!
-                else : group_dict[group][group_name].append(name) # just append otherwise
+            group_dict = handle_groups(groupables, name, row_, group_dict)
+            
         # return the dicts and fieldname
         return reader.fieldnames, main_dict, group_dict
 
+
+# handle inserting new groups into the group dict
+def handle_groups(groupables, name_key, row_value, group_dict):
+    # for each fieldnames to be group-ed
+    for group in groupables: # populate the group_dict
+        group_name = row_value[group] # get the name of the current row's group
+        if group_name not in group_dict[group]: # create the list if it havent existed yet
+            group_dict[group][group_name] = [name_key] # This creates the first list of names!
+        else : group_dict[group][group_name].append(name_key) # just append otherwise
+    return group_dict
 
 
 # Write back to file from the dictionaries
@@ -52,19 +58,20 @@ def write_dicts(file_path, headers, main_key, main_dict, group_dict, ranked_fiel
                 main_dict[name][stored_rank] = rank + 1 # set the rank first
                 writer.writerow({main_key : name, **main_dict[name]}) # WRITE !
 
+
 # make it easy to prompt numerical values
 def get_numeric(prompt_string):
     while True:
-        try :
-            return float(input(prompt_string))
-        except ValueError:
-            continue
+        try : return float(input(prompt_string))
+        except ValueError : continue
+
 
 # debug tools
 def get_by_major_group(dict_, major_group):
     print(f"<<< {major_group} >>>")
     for target_ in dict_[major_group]:
         print(f"{target_} === {dict_[major_group][target_]}")
+
 
 def get_by_group(dict_, major_group, target_):
     print(f"{target_} === {dict_[major_group][target_]}")
