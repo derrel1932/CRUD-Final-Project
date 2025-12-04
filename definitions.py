@@ -82,7 +82,43 @@ def read__(main_dict, group_dict, FIELDNAMES, MAIN_KEY, GROUPABLES, RANKED_FIELD
 # ============================================================================================== UPDATE
 # the classic update part of the CRUD
 def update(main_dict, group_dict, FIELDNAMES, MAIN_KEY, GROUPABLES, RANKED_FIELD, RANK_STORAGE):
-    print("Welcome to <<< UPDATE MODE >>>")
+    print("_ _ _Welcome to <<< UPDATE MODE >>>_ _ _")
+    print("Perform changes to any data information.")
+    # update loop
+    while True:
+
+        selected_key = input(f": : : : : Enter the {MAIN_KEY} of the data you want to change : (enter nothing to exit) ").upper()
+        # if there is no such key that was selected
+        if selected_key not in main_dict:
+            print(f"No such {MAIN_KEY} of that '{selected_key}' exists.")
+            break # -------------------------------------------------
+
+        # change more than one values in the same selected key
+        while True:
+            # if the selected key exists, display info on these
+            print(f"!!! < {MAIN_KEY} : {selected_key} > : ")
+            for key, value in main_dict[selected_key].items():
+                print(f">>> {key} : {value}")
+            which_to_change = input("= = = = = Enter which do you want to change : (enter nothing to exit) ")
+            if which_to_change == MAIN_KEY:
+                print(f"YOU ARE ABOUT TO CHANGE THE {MAIN_KEY} !")
+                new_main_key = input(f"What shall be the new {MAIN_KEY} : ").upper()
+                main_dict[new_main_key] = main_dict[selected_key] # new named key
+                main_dict.remove(selected_key) # remove the previously named key
+            
+            # if the chosen thing to change is not present
+            if which_to_change not in main_dict[selected_key]:
+                print(f"No such key of that '{which_to_change}' exists.")
+                break # -------------------------------------------------
+            
+            # ask to change it into what
+            if which_to_change == RANK_STORAGE:
+                print("You're not allowed to change this ...")
+            elif which_to_change == RANKED_FIELD:
+                main_dict[selected_key][which_to_change] = cf_.get_numeric(f"Enter new value for {which_to_change} : ")
+            else:
+                main_dict[selected_key][which_to_change] = input(f"Enter new value for {which_to_change} : ")
+
     return main_dict, group_dict
 
 
@@ -100,8 +136,8 @@ def show_by_main_keys(main_dict, MAIN_KEY):
     main_key = input(f">>> Enter {MAIN_KEY} : ").upper()
     if main_key in main_dict : # check if it exists yet
         print(f"!!! < {main_key} > :")
-        for key in main_dict[main_key]:
-            print(f">>> {key} : {main_dict[main_key][key]}")
+        for key, value in main_dict[main_key].items():
+            print(f">>> {key} : {value}")
         return True # found something of that key
     print(f"{main_key} doesn't exist...")
     return False # found nothing
