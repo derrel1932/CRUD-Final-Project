@@ -61,22 +61,21 @@ def read__(main_dict, group_dict, FIELDNAMES, MAIN_KEY, GROUPABLES, RANKED_FIELD
         print(f"====================================== SELECT WHICH TO READ :")
         print(f"1. By '{MAIN_KEY}' keys\n2. By Field Groups\n3. Cancel & Exit")
         found_something = False
-        response = input("Enter Action : ")
-        if response == '1':
-            found_something = show_by_main_keys(main_dict, MAIN_KEY) # if something is found offer to read or update it
-        elif response == '2':
-            found_something = show_by_group_values(main_dict, group_dict, MAIN_KEY) # show by groups
-        elif response == '3': break
-
+        match input("Enter Action : "):
+            case '1': found_something = show_by_main_keys(main_dict, MAIN_KEY) # if something is found offer to read or update it
+            case '2': found_something = show_by_group_values(main_dict, group_dict, MAIN_KEY) # show by groups
+            case '3': break
 
         if found_something:
-            match input("Do you want to proceed to : 1. Update | 2. Delete  | Exit : "):
+            match input("Do you want to proceed to : 1. Update | 2. Delete  | 3. Read | Exit : "):
                 case '1': # The use of return is to quit this read scope imidiately after end of update process
                     return update(main_dict, group_dict, FIELDNAMES, MAIN_KEY, GROUPABLES, RANKED_FIELD, RANK_STORAGE)
-                case '2':
+                case '2': # The use of return is to quit this read scope imidiately after end of delete process
                     return delete(main_dict, group_dict, FIELDNAMES, MAIN_KEY, GROUPABLES, RANKED_FIELD, RANK_STORAGE)
-        elif input(": : : Want to find something else ? (y/n) ") in 'Yy' : continue
-        else: break
+                case '3': continue # restart read loop
+                case _ : break # break out of loop
+        elif input(": : : Want to find something else ? (y/n) ") in 'Yy' : continue # restart read loop
+        else: break # break out of loop
     return main_dict, group_dict
 
 
@@ -100,7 +99,7 @@ def delete(main_dict, group_dict, FIELDNAMES, MAIN_KEY, GROUPABLES, RANKED_FIELD
 def show_by_main_keys(main_dict, MAIN_KEY):
     main_key = input(f">>> Enter {MAIN_KEY} : ").upper()
     if main_key in main_dict : # check if it exists yet
-        print(f"{main_key} :")
+        print(f"!!! < {main_key} > :")
         for key in main_dict[main_key]:
             print(f">>> {key} : {main_dict[main_key][key]}")
         return True # found something of that key
@@ -109,7 +108,46 @@ def show_by_main_keys(main_dict, MAIN_KEY):
 
 # help the read function to display based on group_dict
 def show_by_group_values(main_dict, group_dict, MAIN_KEY):
-    print(f"")
+    options = {}
+    # display each field
+    for i, fields in enumerate(group_dict):
+        print(f"{str(i+1)+'.':<3} {fields}")
+        options[str(i+1)] = fields
+    # get the user to choose
+    selected_field = input("SELECT THE NUMBER from which field is the group you're looking for : ")
+    # if the user selected a non option
+    if selected_field not in options:
+        print(f"'{selected_field}' is not an option.")
+        return False
+    
+
+    selected_field = options[selected_field]
+    # if the user did select an option, display the whole thing
+    for j, groups in enumerate(group_dict[selected_field]):
+        print(f"{groups:<15} | ", end='')
+        if j % 10 == 0 : print()
+    selected_group = input(f"\nSELECT from which group is the {MAIN_KEY} you're looking for ? ").upper()
+    # if the user selected a non option
+    if selected_group not in group_dict[selected_field]:
+        print(f"'{selected_group}' does not exist.")
+        return False
+    
+    # if the user did select a valid group, display keys
+    print(f"{MAIN_KEY} under this {selected_group} group :")
+    for k, keys in enumerate(group_dict[selected_field][selected_group]):
+        print(f"{keys:<15} | ", end='')
+        if k % 10 == 0 : print()
+    selected_key = input(f"\nSELECT which {MAIN_KEY} are you looking for ? ").upper()
+    # if the user selected a non option
+    if selected_key not in group_dict[selected_field][selected_group]:
+        print(f"{selected_group} does not exist.")
+        return False
+    
+    # FINALLY FOUND A MATCH BY GROUP
+    print(f"!!! < {selected_key} > :")
+    for key in main_dict[selected_key]:
+        print(f">>> {key} : {main_dict[selected_key][key]}")
+    return True # found something of that key
 
     
 # simply display the menus of what to do
